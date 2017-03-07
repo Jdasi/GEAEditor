@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraControls : MonoBehaviour
@@ -14,7 +13,7 @@ public class CameraControls : MonoBehaviour
 
 	void Start()
     {
-		cam = GetComponent<Camera>();
+		cam = Camera.main;
         original_zoom = cam.orthographicSize;
 	}
 	
@@ -39,12 +38,12 @@ public class CameraControls : MonoBehaviour
 
     void handle_movement()
     {
-        Vector3 temp = transform.position;
+        Vector3 temp = cam.transform.position;
 
         temp.x += Input.GetAxis("Horizontal") * move_speed * Time.deltaTime * current_modifier;
         temp.y += Input.GetAxis("Vertical") * move_speed * Time.deltaTime * current_modifier;
 
-        transform.position = temp;
+        cam.transform.position = temp;
     }
 
     void handle_zoom()
