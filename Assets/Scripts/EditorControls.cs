@@ -4,22 +4,20 @@ using UnityEngine;
 
 public class EditorControls : MonoBehaviour
 {
-    public List<Sprite> sprites;
-
+    private TileSelectionManager tile_selection_manager;
     private BoxCollider2D mouse_collider;
     private Vector3 mouse_pos;
 
     private bool can_paint;
     private bool painting;
 
-    private int selected_id;
-    private Sprite selected_sprite;
+    private int current_tile_id;
+    private Sprite current_sprite;
 
 	void Start()
     {
+        tile_selection_manager = GameObject.FindObjectOfType<TileSelectionManager>();
         mouse_collider = GetComponent<BoxCollider2D>();
-
-        update_selected_sprite(0);
 	}
 	
 	void Update()
@@ -33,7 +31,7 @@ public class EditorControls : MonoBehaviour
     void OnTriggerStay2D(Collider2D other)
     {
         if (other.tag == "Tile" && painting)
-            other.GetComponent<Tile>().paint(selected_id, selected_sprite);
+            other.GetComponent<EditableTile>().paint(current_tile_id, current_sprite);
     }
 
     void track_mouse()
@@ -46,30 +44,30 @@ public class EditorControls : MonoBehaviour
 
     void handle_selection_controls()
     {
-        if (Input.GetButtonDown("SelectedTilePrev"))
-        {
-            --selected_id;
-
-            if (selected_id < 0)
-                selected_id = sprites.Count - 1;
-
-            update_selected_sprite(selected_id);
-        }
-
         if (Input.GetButtonDown("SelectedTileNext"))
         {
-            ++selected_id;
+            tile_selection_manager.select_next_tile();
+        }
 
-            if (selected_id >= sprites.Count)
-                selected_id = 0;
+        if (Input.GetButtonDown("SelectedTilePrev"))
+        {
+            tile_selection_manager.select_prev_tile();
+        }
 
-            update_selected_sprite(selected_id);
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            tile_selection_manager.next_tile_page();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            tile_selection_manager.prev_tile_page();
         }
     }
 
-    void update_selected_sprite(int id)
+    public void update_selected_sprite(int tile_id, Sprite sprite)
     {
-        this.selected_id = id;
-        this.selected_sprite = sprites[id];
+        this.current_tile_id = tile_id;
+        this.current_sprite = sprite;
     }
 }

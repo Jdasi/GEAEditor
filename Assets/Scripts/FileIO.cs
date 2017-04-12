@@ -7,11 +7,11 @@ using System.IO;
 public class FileIO : MonoBehaviour
 {
     private JsonData level_data;
-    private Grid grid;
+    private EditableGrid grid;
 
 	void Start()
     {
-        grid = GameObject.FindObjectOfType<Grid>();
+        grid = GameObject.FindObjectOfType<EditableGrid>();
 	}
 
     public void save_level()

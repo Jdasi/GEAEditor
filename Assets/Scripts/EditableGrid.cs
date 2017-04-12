@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Grid : MonoBehaviour
+public class EditableGrid : MonoBehaviour
 {
     public uint width = 10;
     public uint height = 10;
     public GameObject editable_tile_prefab;
-    public List<Tile> tiles = new List<Tile>();
+    public List<EditableTile> tiles = new List<EditableTile>();
 
 	void Start()
     {
@@ -35,7 +35,7 @@ public class Grid : MonoBehaviour
             obj.transform.SetParent(this.transform);
             obj.name = "Tile" + i;
 
-            tiles.Add(obj.GetComponent<Tile>());
+            tiles.Add(obj.GetComponent<EditableTile>());
         }
     }
 }

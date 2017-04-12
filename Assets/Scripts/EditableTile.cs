@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class Tile : MonoBehaviour
+public class EditableTile : MonoBehaviour
 {
     private int id = 0;
     private SpriteRenderer sprite_renderer;
@@ -20,5 +20,10 @@ public class Tile : MonoBehaviour
     public int get_id()
     {
         return id;
+    }
+
+    public Sprite get_sprite()
+    {
+        return sprite_renderer.sprite;
     }
 }
