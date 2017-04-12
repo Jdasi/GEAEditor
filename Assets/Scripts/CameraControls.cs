@@ -3,57 +3,74 @@ using UnityEngine;
 
 public class CameraControls : MonoBehaviour
 {
-    public float move_speed = 3.0f;
-    public float scroll_speed = 50.0f;
+    public float move_speed = 20.0f;
+    public float scroll_speed = 300.0f;
     public float shift_modifier = 3.0f;
+    public float drag_speed = 4.0f;
 
-    private Camera cam;
+    private float working_drag_speed;
+
     private float current_modifier = 1.0f;
     private float original_zoom;
 
+    private Vector3 old_cam_pos;
+    private Vector3 drag_origin;
+
 	void Start()
     {
-		cam = Camera.main;
-        original_zoom = cam.orthographicSize;
+        original_zoom = Camera.main.orthographicSize;
 	}
 	
 	void Update()
     {
-        handle_modifier();
-        handle_movement();
+        handle_speed_modifier();
+        handle_keyboard_movement();
+        handle_mouse_movement();
         handle_zoom();
 	}
 
-    void handle_modifier()
+    void handle_speed_modifier()
     {
-        if (Input.GetButton("CameraSpeedModifier"))
-        {
-            current_modifier = shift_modifier;
-        }
-        else
-        {
-            current_modifier = 1.0f;
-        }
+        current_modifier = Input.GetButton("CameraSpeedModifier") ? shift_modifier : 1.0f;
     }
 
-    void handle_movement()
+    void handle_keyboard_movement()
     {
-        Vector3 temp = cam.transform.position;
+        Vector3 temp = Camera.main.transform.position;
 
         temp.x += Input.GetAxis("Horizontal") * move_speed * Time.deltaTime * current_modifier;
         temp.y += Input.GetAxis("Vertical") * move_speed * Time.deltaTime * current_modifier;
 
-        cam.transform.position = temp;
+        Camera.main.transform.position = temp;
+    }
+
+    void handle_mouse_movement()
+    {
+        working_drag_speed = drag_speed * Camera.main.orthographicSize;
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            old_cam_pos = Camera.main.transform.position;
+            drag_origin = Input.mousePosition;
+        }
+
+        if (Input.GetMouseButton(1))
+        {
+            Vector3 drag_difference = Camera.main.ScreenToViewportPoint(Input.mousePosition - drag_origin);
+            Vector3 move = new Vector3(drag_difference.x * working_drag_speed, drag_difference.y * (working_drag_speed / 1.5f), 0);
+
+            Camera.main.transform.position = old_cam_pos - move;
+        }
     }
 
     void handle_zoom()
     {
-        cam.orthographicSize -= Input.GetAxis("MouseScroll") * scroll_speed * Time.deltaTime * current_modifier;
-        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, 1, 10);
+        Camera.main.orthographicSize -= Input.GetAxis("MouseScroll") * scroll_speed * Time.deltaTime * current_modifier;
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 1, 10);
 
         if (Input.GetButtonDown("ResetCameraZoom"))
         {
-            cam.orthographicSize = original_zoom;
+            Camera.main.orthographicSize = original_zoom;
         }
     }
 }

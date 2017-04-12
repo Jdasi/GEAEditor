@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61653954472331758}
   - component: {fileID: 114773984546233352}
   m_Layer: 8
-  m_Name: Tile
+  m_Name: EditableTile
   m_TagString: Tile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,6 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64680764f0b3e984fb14d66c11e88c1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
 --- !u!212 &212005579736391776
 SpriteRenderer:
   m_ObjectHideFlags: 1
