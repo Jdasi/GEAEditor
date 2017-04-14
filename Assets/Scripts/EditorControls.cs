@@ -11,8 +11,10 @@ public class EditorControls : MonoBehaviour
     private bool can_paint;
     private bool painting;
 
-    private int current_tile_id;
+    private int tile_id_to_paint;
     private Sprite current_sprite;
+
+    private bool spawn_placed;
 
 	void Start()
     {
@@ -30,8 +32,10 @@ public class EditorControls : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.tag == "Tile" && painting)
-            other.GetComponent<EditableTile>().paint(current_tile_id, current_sprite);
+        if (!(other.tag == "Tile" && painting))
+            return;
+
+        paint_tile(other.GetComponent<EditableTile>());
     }
 
     void track_mouse()
@@ -65,9 +69,27 @@ public class EditorControls : MonoBehaviour
         }
     }
 
+    void paint_tile(EditableTile tile)
+    {
+        if (tile_id_to_paint == 1)
+        {
+            if (!spawn_placed)
+                spawn_placed = true;
+            else
+                return;
+        }
+        else
+        {
+            if (tile.get_id() == 1)
+                spawn_placed = false;
+        }
+
+        tile.paint(tile_id_to_paint, current_sprite);
+    }
+
     public void update_selected_sprite(int tile_id, Sprite sprite)
     {
-        this.current_tile_id = tile_id;
+        this.tile_id_to_paint = tile_id;
         this.current_sprite = sprite;
     }
 }

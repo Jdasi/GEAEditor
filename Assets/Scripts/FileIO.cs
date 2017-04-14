@@ -16,15 +16,7 @@ public class FileIO : MonoBehaviour
 
     public void save_level()
     {
-        uint area = grid.width * grid.height;
-        int[] tiles = new int[area];
-
-        for (int i = 0; i < area; ++i)
-        {
-            tiles[i] = grid.tiles[i].get_id();
-        }
-
-        JSWLevel level = new JSWLevel(tiles);
+        JSWLevel level = new JSWLevel(grid.get_tile_ids());
 
         level_data = JsonMapper.ToJson(level);
         File.WriteAllText(Application.dataPath + "/Level.json", level_data.ToString());

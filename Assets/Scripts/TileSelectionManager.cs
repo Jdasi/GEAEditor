@@ -5,28 +5,53 @@ using UnityEngine;
 public class TileSelectionManager : MonoBehaviour
 {
     public GameObject gui_tile_prefab;
-    public List<Sprite> sprites;
+    public Texture2D tileset;
+    public Vector2 rect_size;
 
     private List<GUITile> gui_tiles = new List<GUITile>();
     private EditorControls editor_controls;
 
+    private List<Sprite> sprites = new List<Sprite>();
     private const int MAX_TILES = 10;
-    public int current_page = 1;
-    public int min_offset;
-    public int max_offset;
+    private int current_page = 1;
+    private int min_offset;
+    private int max_offset;
 
-    public int gui_tiles_index;
+    private int gui_tiles_index;
     private Sprite selected_sprite;
 
 	void Start()
     {
         editor_controls = GameObject.FindObjectOfType<EditorControls>();
 
+        load_tileset();
+
         init_gui_tiles();
         update_min_max();
 
         selection_changed_event(0, 0);
 	}
+
+    void load_tileset()
+    {
+        int size_x = Mathf.FloorToInt(rect_size.x);
+        int size_y = Mathf.FloorToInt(rect_size.y);
+
+        int width_times =  Mathf.FloorToInt(tileset.width / rect_size.x);
+        int height_times = Mathf.FloorToInt(tileset.height / rect_size.y);
+
+        for (int y = height_times - 1; y >= 0; --y)
+        {
+            for (int x = 0; x < width_times; ++x)
+            {
+                Rect rect = new Rect(0 + (x * size_x), 0 + (y * size_y), size_x, size_y);
+
+                Sprite spr = Sprite.Create(tileset, rect, new Vector2(0.5f, 0.5f));
+
+                sprites.Add(spr);
+            }
+        }
+    }
 
     void init_gui_tiles()
     {
@@ -104,7 +129,7 @@ public class TileSelectionManager : MonoBehaviour
 
     public void next_tile_page()
     {
-        if (max_offset > sprites.Count)
+        if (max_offset >= sprites.Count - 1)
             return;
 
         ++current_page;
@@ -124,12 +149,12 @@ public class TileSelectionManager : MonoBehaviour
     {
         foreach (var gui_tile in gui_tiles)
         {
-            gui_tile.set_outline_enabled(false);
+            gui_tile.is_current_selection(false);
         }
 
         gui_tiles_index = index;
 
-        gui_tiles[gui_tiles_index].set_outline_enabled(true);
+        gui_tiles[gui_tiles_index].is_current_selection(true);
         selected_sprite = sprites[tile_id];
 
         editor_controls.update_selected_sprite(gui_tiles_index + min_offset, selected_sprite);

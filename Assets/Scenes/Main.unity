@@ -538,7 +538,6 @@ MonoBehaviour:
   height: 10
   editable_tile_prefab: {fileID: 1372446878586236, guid: fe216d233d815284aa60e57205939632,
     type: 2}
-  tiles: []
 --- !u!4 &993587879
 Transform:
   m_ObjectHideFlags: 0
@@ -919,23 +918,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gui_tile_prefab: {fileID: 1690369334171888, guid: 603baff2e96b5e349aa165614088d6c3,
     type: 2}
-  sprites:
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 45ba1fef1f794174d8dfaa7d7f474303, type: 3}
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 42486ae1bc40ff541a90d3b45034186f, type: 3}
-  - {fileID: 21300000, guid: 2378b0f9c1d173e4faf618a0dc30771c, type: 3}
-  - {fileID: 21300000, guid: 6afa7f9e89e462c46b0a8255ddf3e025, type: 3}
-  current_page: 1
-  min_offset: 0
-  max_offset: 0
-  gui_tiles_index: 0
+  tileset: {fileID: 2800000, guid: e17534ed10155a1458ca75e9f8876c3b, type: 3}
+  rect_size: {x: 60, y: 60}
 --- !u!1 &1714972301
 GameObject:
   m_ObjectHideFlags: 0

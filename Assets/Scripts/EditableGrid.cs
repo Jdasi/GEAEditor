@@ -8,7 +8,8 @@ public class EditableGrid : MonoBehaviour
     public uint width = 10;
     public uint height = 10;
     public GameObject editable_tile_prefab;
-    public List<EditableTile> tiles = new List<EditableTile>();
+
+    private List<EditableTile> tiles = new List<EditableTile>();
 
 	void Start()
     {
@@ -37,5 +38,17 @@ public class EditableGrid : MonoBehaviour
 
             tiles.Add(obj.GetComponent<EditableTile>());
         }
+    }
+
+    public int[] get_tile_ids()
+    {
+        int[] tile_ids = new int[width * height];
+
+        for (int i = 0; i < tiles.Count; ++i)
+        {
+            tile_ids[i] = tiles[i].get_id();
+        }
+
+        return tile_ids;
     }
 }
