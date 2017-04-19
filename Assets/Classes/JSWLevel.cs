@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class JSWLevel
 {
-    public string name = "name";
     public int width = 1;
     public int height = 1;
     public string description = "description";

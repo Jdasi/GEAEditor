@@ -16,7 +16,7 @@ public class EditableGrid : MonoBehaviour
         tile_selection_manager = GameObject.FindObjectOfType<TileSelectionManager>();
     }
 
-    public void init_grid(int width, int height, int[] tile_ids)
+    public void init_grid(JSWLevel level)
     {
         // Get initial editable sprite prefab and get its size.
         Texture2D texture = editable_tile_prefab.GetComponent<SpriteRenderer>().sprite.texture;
@@ -27,10 +27,10 @@ public class EditableGrid : MonoBehaviour
         var tile_size = new Vector2(tile_width / 100, tile_height / 100);
 
         // Create the grid of tiles based on width & height.
-        int area = width * height;
+        int area = level.width * level.height;
         for (int i = 0; i < area; ++i)
         {
-            Vector3 pos = new Vector3(0 + tile_size.x * (i % width), 0 - tile_size.y * (i / width), 0);
+            Vector3 pos = new Vector3(0 + tile_size.x * (i % level.width), 0 - tile_size.y * (i / level.width), 0);
             GameObject obj = Instantiate(editable_tile_prefab, pos, Quaternion.identity) as GameObject;
 
             obj.transform.SetParent(this.transform);
@@ -38,7 +38,7 @@ public class EditableGrid : MonoBehaviour
 
             EditableTile tile = obj.GetComponent<EditableTile>();
             tile.initialise();
-            paint_tile(tile, tile_selection_manager.get_tile_type_by_id(tile_ids[i]));
+            paint_tile(tile, tile_selection_manager.get_tile_type_by_id(level.tile_ids[i]));
 
             editable_tiles.Add(tile);
         }
