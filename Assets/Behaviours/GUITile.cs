@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GUITile : MonoBehaviour
 {
     private int index = 0; // index of the tile in the GUITileManager list.
-    private int tile_id = 0; // id of the tile that the GUITile represents.
+    private TileType tile_type; // Type of tile that the GUITile represents.
 
     private Image image;
     private Outline outline;
@@ -22,15 +22,15 @@ public class GUITile : MonoBehaviour
     }
 
     // Sets the tile representation info of the GUITile.
-    public void update_info(int tile_id, Sprite sprite)
+    public void update_info(TileType type)
     {
-        this.tile_id = tile_id;
-        this.image.sprite = sprite;
+        this.tile_type = type;
+        this.image.sprite = type.sprite;
     }
 
-    public int get_tile_id()
+    public TileType get_tile_type()
     {
-        return tile_id;
+        return tile_type;
     }
 
     // Informs the GUITile what is managing it and what its index is in that manager's list.
@@ -42,7 +42,7 @@ public class GUITile : MonoBehaviour
 
     public void click()
     {
-        manager.selection_changed_event(index, tile_id);
+        manager.selection_changed_event(index, tile_type.id);
     }
 
     // Highlights or fades the GUITile based on the passed bool.

@@ -5,21 +5,21 @@ using UnityEngine;
 public class EditorControls : MonoBehaviour
 {
     private TileSelectionManager tile_selection_manager;
+    private EditableGrid editable_grid;
     private BoxCollider2D mouse_collider;
     private Vector3 mouse_pos;
 
+    private TileType tile_type_to_paint;
     private bool can_paint;
     private bool painting;
-
-    private int tile_id_to_paint;
-    private Sprite current_sprite;
-
-    private bool spawn_placed;
 
 	void Start()
     {
         tile_selection_manager = GameObject.FindObjectOfType<TileSelectionManager>();
+        editable_grid = GameObject.FindObjectOfType<EditableGrid>();
         mouse_collider = GetComponent<BoxCollider2D>();
+
+        tile_type_to_paint = tile_selection_manager.get_selected_tile_type();
 	}
 	
 	void Update()
@@ -35,7 +35,7 @@ public class EditorControls : MonoBehaviour
         if (!(other.tag == "Tile" && painting))
             return;
 
-        paint_tile(other.GetComponent<EditableTile>());
+        editable_grid.paint_tile(other.GetComponent<EditableTile>(), tile_type_to_paint);
     }
 
     void track_mouse()
@@ -48,48 +48,35 @@ public class EditorControls : MonoBehaviour
 
     void handle_selection_controls()
     {
+        bool selection_changed = false;
+
         if (Input.GetButtonDown("SelectedTileNext"))
         {
             tile_selection_manager.select_next_tile();
+            selection_changed = true;
         }
 
         if (Input.GetButtonDown("SelectedTilePrev"))
         {
             tile_selection_manager.select_prev_tile();
+            selection_changed = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetButtonDown("TilePageNext"))
         {
             tile_selection_manager.next_tile_page();
+            selection_changed = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetButtonDown("TilePagePrev"))
         {
             tile_selection_manager.prev_tile_page();
+            selection_changed = true;
         }
-    }
 
-    void paint_tile(EditableTile tile)
-    {
-        if (tile_id_to_paint == 1)
+        if (selection_changed)
         {
-            if (!spawn_placed)
-                spawn_placed = true;
-            else
-                return;
+            tile_type_to_paint = tile_selection_manager.get_selected_tile_type();
         }
-        else
-        {
-            if (tile.get_id() == 1)
-                spawn_placed = false;
-        }
-
-        tile.paint(tile_id_to_paint, current_sprite);
-    }
-
-    public void update_selected_sprite(int tile_id, Sprite sprite)
-    {
-        this.tile_id_to_paint = tile_id;
-        this.current_sprite = sprite;
     }
 }

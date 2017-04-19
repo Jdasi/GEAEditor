@@ -1,0 +1,53 @@
+{
+	"level_01": 
+    {
+        "width": 5,
+        "height": 5,
+        "description": "The first level",
+        "tileset": "Tileset_01",
+        "tiles": [  0,  0,  0,  0,  0,
+                   20, 20, 20,  0,  0,
+                    0, 21,  0,  0,  0,
+                    0,  0,  1, 20, 20,
+                   20, 20, 20, 20, 20 ]
+	},
+    
+	"level_02": 
+    {
+        "width": 7,
+        "height": 7,
+        "description": "The second level",
+        "tileset": "Tileset_01",
+        "tiles": [  0, 21,  0,  0,  0,  0,  0,
+                    0,  0,  0,  0,  0,  0,  0,
+                   20, 20,  0,  0,  0,  0, 21,
+                    0,  0,  0, 21, 20,  0,  0,
+                   20,  0,  0,  0,  0,  0,  0,
+                   20, 20,  1,  0,  0, 20, 20,
+                   20, 20, 20, 20, 20, 20, 20 ]
+	},
+    
+	"level_03":
+    {
+        "width": 7,
+        "height": 7,
+        "description": "The test level",
+        "tileset": "Tileset_01",
+        "tiles": [  0,  0,  0,  0,  21,  20,  0,
+                    0,  0,  0,  0,  0,  0,  0,
+                    0,  0,  0,  0,  1,  0,  0,
+                    0,  0,  0,  0,  0,  0,  0,
+                    0,  0,  20,  20,  20,  0,  0,
+                   20,  20,  20,  20,  20,  20,  20,
+                    0,  0,  0,  0,  0,  0,  0 ]
+	},
+    
+	"level_04": 
+    {
+        "width": 5,
+        "height": 2,
+        "description": "The test level",
+        "tileset": "Tileset_01",
+        "tiles":[0,0,1,0,0,20,20,20,20,20]
+	}
+}
