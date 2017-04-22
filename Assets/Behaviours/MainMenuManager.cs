@@ -19,15 +19,29 @@ public class MainMenuManager : MonoBehaviour
     public Dropdown dropdown_name;
 
     private LevelManager level_manager;
+    private EditorControls editor_controls;
+    private CameraControls camera_controls;
 
 	void Start()
     {
         level_manager = GameObject.FindObjectOfType<LevelManager>();
+        editor_controls = GameObject.FindObjectOfType<EditorControls>();
+        camera_controls = GameObject.FindObjectOfType<CameraControls>();
 
         show_menu(main_menu, true);
 
         width_height_field_changed();
 	}
+
+    void Update()
+    {
+        editor_controls.controls_enabled = camera_controls.controls_enabled = !is_menu_open();
+    }
+
+    bool is_menu_open()
+    {
+        return main_menu.activeSelf || new_level_menu.activeSelf || load_level_menu.activeSelf;
+    }
 
     void hide_all_menus()
     {
@@ -52,6 +66,10 @@ public class MainMenuManager : MonoBehaviour
 
     public void button_new_level()
     {
+        field_width.text = "";
+        field_height.text = "";
+        field_description.text = "";
+
         show_menu(new_level_menu, true);
     }
 
@@ -64,6 +82,8 @@ public class MainMenuManager : MonoBehaviour
     {
         dropdown_name.ClearOptions();
         dropdown_name.AddOptions(level_manager.get_level_names());
+
+        dropdown_name_changed();
 
         show_menu(load_level_menu, true);
     }
@@ -88,7 +108,13 @@ public class MainMenuManager : MonoBehaviour
 
     public void button_delete()
     {
+        level_manager.delete_level(dropdown_name.options[dropdown_name.value].text);
 
+        var options = dropdown_name.options;
+        options.RemoveAt(dropdown_name.value);
+        dropdown_name.options = options;
+
+        dropdown_name_changed();
     }
 
     public void button_cancel()
@@ -116,5 +142,13 @@ public class MainMenuManager : MonoBehaviour
         {
             create_button.interactable = false;
         }
+    }
+
+    public void dropdown_name_changed()
+    {
+        bool can_load = dropdown_name.options.Count > 0;
+
+        dropdown_name.interactable = can_load;
+        load_button.interactable = can_load;
     }
 }

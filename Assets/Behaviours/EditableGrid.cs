@@ -16,7 +16,7 @@ public class EditableGrid : MonoBehaviour
         tile_selection_manager = GameObject.FindObjectOfType<TileSelectionManager>();
     }
 
-    void reset_grid()
+    public void reset_grid()
     {
         foreach (var tile in editable_tiles)
         {

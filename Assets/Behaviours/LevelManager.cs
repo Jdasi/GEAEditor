@@ -37,6 +37,19 @@ public class LevelManager : MonoBehaviour
         editable_grid.init_grid(current_level);
     }
 
+    public void delete_level(string level_name)
+    {
+        if (levels[level_name] == current_level)
+        {
+            current_level = null;
+            editable_grid.reset_grid();
+        }
+
+        levels.Remove(level_name);
+
+        save_levels();
+    }
+
     public void save_levels()
     {
         if (current_level != null)
@@ -62,6 +75,8 @@ public class LevelManager : MonoBehaviour
 
         string level_name = brute_force_level_name();
         levels.Add(level_name, level);
+
+        save_levels();
 
         load_level(level_name);
     }

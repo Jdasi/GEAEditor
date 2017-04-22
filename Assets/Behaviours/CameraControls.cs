@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CameraControls : MonoBehaviour
 {
+    public bool controls_enabled = true; // Used to disable controls while in the menus.
+
     public float move_speed = 20.0f;
     public float scroll_speed = 300.0f;
     public float shift_modifier = 3.0f;
@@ -23,6 +25,9 @@ public class CameraControls : MonoBehaviour
 	
 	void Update()
     {
+        if (!controls_enabled)
+            return;
+
         handle_speed_modifier();
         handle_keyboard_movement();
         handle_mouse_movement();
@@ -72,5 +77,10 @@ public class CameraControls : MonoBehaviour
         {
             Camera.main.orthographicSize = original_zoom;
         }
+    }
+
+    public float get_original_zoom()
+    {
+        return original_zoom;
     }
 }

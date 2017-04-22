@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class EditorControls : MonoBehaviour
 {
+    public bool controls_enabled = true; // Used to disable controls while in the menus.
+
     private TileSelectionManager tile_selection_manager;
     private EditableGrid editable_grid;
     private BoxCollider2D mouse_collider;
     private Vector3 mouse_pos;
 
     private TileType tile_type_to_paint;
-    public bool can_paint;
-    public bool painting;
+    private bool cursor_over_ui;
     private bool waypoint_mode;
 
 	void Start()
@@ -26,12 +27,15 @@ public class EditorControls : MonoBehaviour
         track_mouse();
         handle_selection_controls();
 
-        mouse_collider.enabled = painting = Input.GetMouseButton(0) && can_paint;
+        mouse_collider.enabled = Input.GetMouseButton(0) && controls_enabled;
 	}
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (!(other.tag == "Tile" && painting))
+        if (cursor_over_ui)
+            return;
+
+        if (other.tag != "Tile")
             return;
 
         editable_grid.paint_tile(other.GetComponent<EditableTile>(), tile_type_to_paint);
@@ -42,11 +46,14 @@ public class EditorControls : MonoBehaviour
         mouse_pos = Input.mousePosition;
         transform.position = Camera.main.ScreenToWorldPoint(mouse_pos);
 
-        can_paint = !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+        cursor_over_ui = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
     }
 
     void handle_selection_controls()
     {
+        if (!controls_enabled)
+            return;
+
         if (Input.GetButtonDown("SelectedTileNext"))
         {
             tile_selection_manager.select_next_tile();
