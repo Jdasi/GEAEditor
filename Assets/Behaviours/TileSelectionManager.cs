@@ -7,6 +7,7 @@ public class TileSelectionManager : MonoBehaviour
     public GameObject gui_tile_prefab;
     public Texture2D tileset;
 
+    private EditorControls editor_controls;
     private List<GUITile> gui_tiles = new List<GUITile>();
     private int selected_gui_tile_index;
     private TileType selected_tile_type;
@@ -21,6 +22,8 @@ public class TileSelectionManager : MonoBehaviour
 
 	void Start()
     {
+        editor_controls = GameObject.FindObjectOfType<EditorControls>();
+
         load_tileset();
 
         init_gui_tiles();
@@ -87,11 +90,6 @@ public class TileSelectionManager : MonoBehaviour
         }
     }
 
-    public TileType get_selected_tile_type()
-    {
-        return selected_tile_type;
-    }
-
     public TileType get_tile_type_by_id(int tile_id)
     {
         return tile_types[tile_id];
@@ -156,5 +154,7 @@ public class TileSelectionManager : MonoBehaviour
 
         gui_tiles[selected_gui_tile_index].is_current_selection(true);
         selected_tile_type = tile_types[type_id];
+
+        editor_controls.update_tile_type_to_paint(selected_tile_type);
     }
 }

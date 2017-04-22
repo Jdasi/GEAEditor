@@ -6,35 +6,48 @@ using System.IO;
 
 public class FileIO
 {
-    public Dictionary<string, JSWLevel> load_levels()
+    List<string> get_object_keys(JsonData data)
+    {
+        List<string> keys = new List<string>();
+
+        foreach (string key in data.Keys)
+        {
+            keys.Add(key);
+        }
+
+        return keys;
+    }
+
+    public SortedDictionary<string, JSWLevel> load_levels()
     {
         string str = File.ReadAllText(Application.dataPath + "/levels.json");
         JsonData levels_data = JsonMapper.ToObject(str);
+        List<string> keys = get_object_keys(levels_data);
 
-        Dictionary<string, JSWLevel> levels = new Dictionary<string, JSWLevel>();
+        SortedDictionary<string, JSWLevel> levels = new SortedDictionary<string, JSWLevel>();
 
-        for (int i = 0; i < levels_data.Count; ++i)
+        for (int level_index = 0; level_index < levels_data.Count; ++level_index)
         {
-            JSWLevel level = new JSWLevel();
+            JSWLevel new_level = new JSWLevel();
 
-            level.width = (int)levels_data[i]["width"];
-            level.height = (int)levels_data[i]["height"];
-            level.description = (string)levels_data[i]["description"];
-            level.tileset = (string)levels_data[i]["tileset"];
+            new_level.width = (int)levels_data[level_index]["width"];
+            new_level.height = (int)levels_data[level_index]["height"];
+            new_level.description = (string)levels_data[level_index]["description"];
+            new_level.tileset = (string)levels_data[level_index]["tileset"];
 
-            level.tile_ids = new int[levels_data[i]["tile_ids"].Count];
-            for (int j = 0; j < level.width * level.height; ++j)
+            new_level.tile_ids = new int[levels_data[level_index]["tile_ids"].Count];
+            for (int id_index = 0; id_index < new_level.width * new_level.height; ++id_index)
             {
-                level.tile_ids[j] = level.tile_ids[j];
+                new_level.tile_ids[id_index] = (int)levels_data[level_index]["tile_ids"][id_index];
             }
 
-            levels.Add("level_" + (i + 1).ToString(), level);
+            levels.Add(keys[level_index], new_level);
         }
 
         return levels;
     }
 
-    public void save_levels(Dictionary<string, JSWLevel> levels)
+    public void save_levels(SortedDictionary<string, JSWLevel> levels)
     {
         JsonData levels_data = JsonMapper.ToJson(levels);
         File.WriteAllText(Application.dataPath + "/levels.json", levels_data.ToString());

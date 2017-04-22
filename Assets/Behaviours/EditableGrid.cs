@@ -16,8 +16,21 @@ public class EditableGrid : MonoBehaviour
         tile_selection_manager = GameObject.FindObjectOfType<TileSelectionManager>();
     }
 
+    void reset_grid()
+    {
+        foreach (var tile in editable_tiles)
+        {
+            DestroyImmediate(tile.gameObject);
+        }
+
+        editable_tiles.Clear();
+    }
+
     public void init_grid(JSWLevel level)
     {
+        // Clear grid if it has already been initialised.
+        reset_grid();
+
         // Get initial editable sprite prefab and get its size.
         Texture2D texture = editable_tile_prefab.GetComponent<SpriteRenderer>().sprite.texture;
         float tile_width = texture.width;
@@ -66,5 +79,17 @@ public class EditableGrid : MonoBehaviour
         }
 
         tile.paint(tile_type_to_paint);
+    }
+
+    public int[] get_tile_ids()
+    {
+        int[] tile_ids = new int[editable_tiles.Count];
+
+        for (int i = 0; i < editable_tiles.Count; ++i)
+        {
+            tile_ids[i] = editable_tiles[i].get_tile_type().id;
+        }
+
+        return tile_ids;
     }
 }

@@ -24,4 +24,12 @@ public class EditableTile : MonoBehaviour
     {
         return tile_type;
     }
+
+    public void set_faded(bool fade)
+    {
+        Color new_color = sprite_renderer.color;
+        new_color.a = fade ? 0.8f : 1.0f;
+
+        sprite_renderer.color = new_color;
+    }
 }
