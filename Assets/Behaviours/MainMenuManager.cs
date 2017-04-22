@@ -108,12 +108,27 @@ public class MainMenuManager : MonoBehaviour
 
     public void button_delete()
     {
+        // Get the current options.
+        var options = dropdown_name.options;
+
+        if (options.Count <= 0)
+        {
+            dropdown_name.value = 0;
+            return;
+        }
+
+        // Remove the level entry from the level manager.
         level_manager.delete_level(dropdown_name.options[dropdown_name.value].text);
 
-        var options = dropdown_name.options;
+        // Remove the entry from the dropdown options.
         options.RemoveAt(dropdown_name.value);
         dropdown_name.options = options;
 
+        // Update the dropdown selection.
+        dropdown_name.value = dropdown_name.value - 1;
+        Mathf.Clamp(dropdown_name.value, 0, options.Count - 1);
+
+        // Update the interactivity of the load menu elements.
         dropdown_name_changed();
     }
 

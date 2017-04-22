@@ -75,12 +75,22 @@ public class CameraControls : MonoBehaviour
 
         if (Input.GetButtonDown("ResetCameraZoom"))
         {
-            Camera.main.orthographicSize = original_zoom;
+            reset_zoom();
         }
     }
 
-    public float get_original_zoom()
+    void reset_zoom()
     {
-        return original_zoom;
+        Camera.main.orthographicSize = original_zoom;
+    }
+
+    public void reset_camera(Vector2 pos)
+    {
+        Vector3 new_pos = pos;
+        new_pos.z = Camera.main.transform.position.z;
+
+        Camera.main.transform.position = new_pos;
+
+        reset_zoom();
     }
 }

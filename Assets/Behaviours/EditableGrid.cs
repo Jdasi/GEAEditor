@@ -7,12 +7,14 @@ public class EditableGrid : MonoBehaviour
 {
     public GameObject editable_tile_prefab;
 
+    private CameraControls camera_controls;
     private List<EditableTile> editable_tiles = new List<EditableTile>();
     private TileSelectionManager tile_selection_manager;
     private bool spawn_placed;
 
     void Start()
     {
+        camera_controls = GameObject.FindObjectOfType<CameraControls>();
         tile_selection_manager = GameObject.FindObjectOfType<TileSelectionManager>();
     }
 
@@ -33,11 +35,9 @@ public class EditableGrid : MonoBehaviour
 
         // Get initial editable sprite prefab and get its size.
         Texture2D texture = editable_tile_prefab.GetComponent<SpriteRenderer>().sprite.texture;
-        float tile_width = texture.width;
-        float tile_height = texture.height;
 
         // Divide size by 100 to match Unity's unit measurements.
-        var tile_size = new Vector2(tile_width / 100, tile_height / 100);
+        Vector2 tile_size = new Vector2((float)texture.width / 100, (float)texture.height / 100);
 
         // Create the grid of tiles based on width & height.
         int area = level.width * level.height;
@@ -50,17 +50,14 @@ public class EditableGrid : MonoBehaviour
             obj.name = "Tile" + i;
 
             EditableTile tile = obj.GetComponent<EditableTile>();
-            tile.initialise();
+            tile.initialise(i);
             paint_tile(tile, tile_selection_manager.get_tile_type_by_id(level.tile_ids[i]));
 
             editable_tiles.Add(tile);
         }
 
         // Center camera on the grid.
-        Vector3 new_cam_pos = editable_tiles[area / 2].transform.position;
-        new_cam_pos.z = Camera.main.transform.position.z;
-
-        Camera.main.transform.position = new_cam_pos; 
+        camera_controls.reset_camera(new Vector2((level.width * tile_size.x) / 2, -((level.height * tile_size.y) / 2)));
     }
 
     public void paint_tile(EditableTile tile, TileType tile_type_to_paint)
