@@ -12,6 +12,7 @@ public class MainMenuManager : MonoBehaviour
     public Button save_button;
     public Button create_button;
     public Button load_button;
+    public Button waypoint_button;
 
     public InputField field_width;
     public InputField field_height;
@@ -36,6 +37,7 @@ public class MainMenuManager : MonoBehaviour
     void Update()
     {
         editor_controls.controls_enabled = camera_controls.controls_enabled = !is_menu_open();
+        waypoint_button.interactable = !is_menu_open();
     }
 
     bool is_menu_open()
@@ -50,11 +52,13 @@ public class MainMenuManager : MonoBehaviour
         load_level_menu.SetActive(false);
     }
 
+    // Hides all menus and then hides or reveals the passed menu.
     void show_menu(GameObject menu, bool show)
     {
         hide_all_menus();
 
-        save_button.interactable = level_manager.get_current_level() != null;            
+        save_button.interactable = level_manager.get_current_level() != null;
+        editor_controls.set_waypoint_mode(false);
 
         menu.SetActive(show);
     }
@@ -66,6 +70,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void button_new_level()
     {
+        // Reset field values.
         field_width.text = "";
         field_height.text = "";
         field_description.text = "";
@@ -152,9 +157,7 @@ public class MainMenuManager : MonoBehaviour
             {
                 create_button.interactable = true;
             }
-        }
-        else
-        {
+        } else {
             create_button.interactable = false;
         }
     }

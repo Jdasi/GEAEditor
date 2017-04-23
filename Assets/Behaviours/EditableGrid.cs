@@ -6,26 +6,83 @@ using UnityEngine.UI;
 public class EditableGrid : MonoBehaviour
 {
     public GameObject editable_tile_prefab;
+    public GameObject waypoint_line_prefab;
 
     private CameraControls camera_controls;
-    private List<EditableTile> editable_tiles = new List<EditableTile>();
     private TileSelectionManager tile_selection_manager;
-    private bool spawn_placed;
+
+    private List<EditableTile> editable_tiles = new List<EditableTile>();
+    private Transform tiles_transform; // For parenting the EditableTile prefabs.
+    private bool spawn_placed; // Indicates if the EditableGrid contains a player spawn tile.
+
+    // The key is the index of the enemy in the EditableTiles array.
+    private SortedDictionary<int, Enemy> enemy_waypoints = new SortedDictionary<int, Enemy>();
+
+    private Transform waypoints_transform; // For parenting the WaypointLine prefabs;
+    private bool waypoint_mode; // Determines interaction with the EditableGrid.
 
     void Start()
     {
         camera_controls = GameObject.FindObjectOfType<CameraControls>();
         tile_selection_manager = GameObject.FindObjectOfType<TileSelectionManager>();
+
+        tiles_transform = transform.FindChild("Tiles");
+        waypoints_transform = transform.FindChild("WaypointLines");
+    }
+
+    void add_enemy(EditableTile tile)
+    {
+        Enemy enemy = new Enemy();
+
+        enemy.tiles_index = tile.get_tiles_index();
+        enemy.start_pos = tile.transform.position;
+        enemy.set_waypoint(tile.get_tiles_index(), tile.transform.position);
+
+        enemy_waypoints.Add(enemy.tiles_index, enemy);
+    }
+
+    void remove_enemy(int tiles_index)
+    {
+        foreach (var elem in enemy_waypoints)
+        {
+            if (elem.Value.tiles_index == tiles_index)
+            {
+                enemy_waypoints.Remove(elem.Key);
+                break;
+            }
+        }
+    }
+
+    void init_enemy_waypoints(int[] waypoints)
+    {
+        // Abort if error with waypoints.
+        if (waypoints == null)
+            return;
+
+        int counter = 0;
+        foreach (var elem in enemy_waypoints)
+        {
+            Enemy enemy = elem.Value;
+
+            enemy.set_waypoint(waypoints[counter], editable_tiles[waypoints[counter]].transform.position);
+
+            ++counter;
+        }
     }
 
     public void reset_grid()
     {
         foreach (var tile in editable_tiles)
         {
-            DestroyImmediate(tile.gameObject);
+            Destroy(tile.gameObject);
         }
 
         editable_tiles.Clear();
+        enemy_waypoints.Clear();
+
+        spawn_placed = false;
+
+        disable_waypoint_mode();
     }
 
     public void init_grid(JSWLevel level)
@@ -46,7 +103,7 @@ public class EditableGrid : MonoBehaviour
             Vector3 pos = new Vector3(0 + tile_size.x * (i % level.width), 0 - tile_size.y * (i / level.width), 0);
             GameObject obj = Instantiate(editable_tile_prefab, pos, Quaternion.identity) as GameObject;
 
-            obj.transform.SetParent(this.transform);
+            obj.transform.SetParent(tiles_transform);
             obj.name = "Tile" + i;
 
             EditableTile tile = obj.GetComponent<EditableTile>();
@@ -56,25 +113,41 @@ public class EditableGrid : MonoBehaviour
             editable_tiles.Add(tile);
         }
 
+        // Match JSWLevel waypoints array.
+        init_enemy_waypoints(level.enemy_waypoints);
+
         // Center camera on the grid.
         camera_controls.reset_camera(new Vector2((level.width * tile_size.x) / 2, -((level.height * tile_size.y) / 2)));
     }
 
+    // Called by init_grid() and whenever the user tries to paint a Tile via EditorControls.
     public void paint_tile(EditableTile tile, TileType tile_type_to_paint)
     {
-        if (tile_type_to_paint.id == 1)
+        // Player spawn can only be placed once.
+        if (tile_type_to_paint.id == 1) // 1 = Player Spawn.
         {
-            if (!spawn_placed)
-                spawn_placed = true;
-            else
+            if (spawn_placed)
                 return;
-        }
-        else
-        {
+
+            spawn_placed = true;
+        } else {
             if (tile.get_tile_type().id == 1)
                 spawn_placed = false;
         }
 
+        // Enemies require additional waypoint info.
+        if (tile_type_to_paint.id == 4) // 4 = Enemy.
+        {
+            if (tile.get_tile_type().id == 4)
+                return;
+
+            add_enemy(tile);
+        } else {
+            if (tile.get_tile_type().id == 4)
+                remove_enemy(tile.get_tiles_index());
+        }
+
+        // If we got this far, paint the tile.
         tile.paint(tile_type_to_paint);
     }
 
@@ -88,5 +161,80 @@ public class EditableGrid : MonoBehaviour
         }
 
         return tile_ids;
+    }
+
+    public int[] get_enemy_waypoints()
+    {
+        int[] waypoints = new int[enemy_waypoints.Count];
+
+        int counter = 0;
+        foreach (var elem in enemy_waypoints)
+        {
+            waypoints[counter] = elem.Value.get_waypoint();
+
+            ++counter;
+        }
+
+        return waypoints;
+    }
+
+    public bool waypoint_mode_enabled()
+    {
+        return waypoint_mode;
+    }
+
+    public void enable_waypoint_mode()
+    {
+        waypoint_mode = true;
+
+        foreach (var elem in enemy_waypoints)
+        {
+            GameObject obj = Instantiate(waypoint_line_prefab, transform.position, Quaternion.identity) as GameObject;
+            obj.transform.SetParent(waypoints_transform);
+
+            Vector3 start_pos = elem.Value.start_pos;
+            Vector3 waypoint_pos = elem.Value.get_waypoint_pos();
+
+            start_pos.z = -1;
+            waypoint_pos.z = -1;
+
+            LineRenderer line = obj.GetComponent<LineRenderer>();
+            line.SetPosition(0, start_pos);
+            line.SetPosition(1, waypoint_pos);
+        }
+
+        // Fade all non-enemy tiles.
+        foreach (EditableTile tile in editable_tiles)
+        {
+            if (tile.get_tile_type().id != 4)
+                tile.set_faded(true);
+        }
+    }
+
+    public void disable_waypoint_mode()
+    {
+        waypoint_mode = false;
+
+        foreach (Transform child in waypoints_transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Remove fade from all tiles.
+        foreach (EditableTile tile in editable_tiles)
+        {
+            tile.set_faded(false);
+        }
+    }
+
+    public Enemy get_enemy(int tile_index)
+    {
+        foreach (var elem in enemy_waypoints)
+        {
+            if (elem.Value.tiles_index == tile_index)
+                return elem.Value;
+        }
+
+        return null;
     }
 }

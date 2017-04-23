@@ -53,9 +53,7 @@ public class GUITile : MonoBehaviour
             outline.effectColor = Color.red;
             gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1.0f);
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        }
-        else
-        {
+        } else {
             outline.effectColor = Color.black;
             gameObject.transform.localScale = new Vector3(0.9f, 0.9f, 1.0f);
             image.color = new Color(1.0f, 1.0f, 1.0f, 0.8f);

@@ -8,7 +8,7 @@ public class LevelManager : MonoBehaviour
     private EditableGrid editable_grid;
     private FileIO file_io = new FileIO();
 
-    private SortedDictionary<string, JSWLevel> levels = new SortedDictionary<string, JSWLevel>();
+    private SortedDictionary<string, JSWLevel> levels;
     private JSWLevel current_level;
 
 	void Start()
@@ -25,7 +25,7 @@ public class LevelManager : MonoBehaviour
         string level_name_prefix = "level_";
 
         // Brute force level name.
-        while (levels.ContainsKey(level_name_prefix + (counter).ToString())){++counter;}
+        while (levels.ContainsKey(level_name_prefix + (counter).ToString())) {++counter;}
 
         return level_name_prefix + counter.ToString();
     }
@@ -53,7 +53,10 @@ public class LevelManager : MonoBehaviour
     public void save_levels()
     {
         if (current_level != null)
+        {
             current_level.tile_ids = editable_grid.get_tile_ids();
+            current_level.enemy_waypoints = editable_grid.get_enemy_waypoints();
+        }
 
         file_io.save_levels(levels);
     }
