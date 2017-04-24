@@ -120,8 +120,7 @@ public class EditorControls : MonoBehaviour
             selected_enemy.set_waypoint(tile.get_tiles_index(), tile.transform.position);
             setting_waypoint = false;
 
-            editable_grid.disable_waypoint_mode();
-            editable_grid.enable_waypoint_mode();
+            editable_grid.refresh_waypoints();
         } else {
             // If tile does not represent an enemy.
             if (tile.get_tile_type().id != 4)

@@ -191,17 +191,10 @@ public class EditableGrid : MonoBehaviour
         {
             GameObject obj = Instantiate(waypoint_line_prefab, transform.position, Quaternion.identity) as GameObject;
             obj.transform.SetParent(waypoints_transform);
-
-            Vector3 start_pos = elem.Value.start_pos;
-            Vector3 waypoint_pos = elem.Value.get_waypoint_pos();
-
-            start_pos.z = -1;
-            waypoint_pos.z = -1;
-
-            LineRenderer line = obj.GetComponent<LineRenderer>();
-            line.SetPosition(0, start_pos);
-            line.SetPosition(1, waypoint_pos);
+            obj.name = "Line" + elem.Value.tiles_index.ToString();
         }
+
+        refresh_waypoints();
 
         // Fade all non-enemy tiles.
         foreach (EditableTile tile in editable_tiles)
@@ -215,6 +208,7 @@ public class EditableGrid : MonoBehaviour
     {
         waypoint_mode = false;
 
+        // Destroy all waypoint lines.
         foreach (Transform child in waypoints_transform)
         {
             Destroy(child.gameObject);
@@ -224,6 +218,26 @@ public class EditableGrid : MonoBehaviour
         foreach (EditableTile tile in editable_tiles)
         {
             tile.set_faded(false);
+        }
+    }
+
+    public void refresh_waypoints()
+    {
+        if (!waypoint_mode)
+            return;
+
+        foreach (var elem in enemy_waypoints)
+        {
+            Vector3 line_start = elem.Value.start_pos;
+            Vector3 line_end = elem.Value.get_waypoint_pos();
+
+            line_start.z = -1;
+            line_end.z = -1;
+
+            string line_name = "Line" + elem.Value.tiles_index.ToString();
+            LineRenderer line = waypoints_transform.FindChild(line_name).GetComponent<LineRenderer>();
+            line.SetPosition(0, line_start);
+            line.SetPosition(1, line_end);
         }
     }
 
