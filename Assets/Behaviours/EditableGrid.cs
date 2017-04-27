@@ -7,12 +7,16 @@ public class EditableGrid : MonoBehaviour
 {
     public GameObject editable_tile_prefab;
     public GameObject waypoint_line_prefab;
+    public GameObject grid_line_prefab;
 
     private CameraControls camera_controls;
     private TileSelectionManager tile_selection_manager;
 
     private List<EditableTile> editable_tiles = new List<EditableTile>();
     private Transform tiles_transform; // For parenting the EditableTile prefabs.
+    private Transform grid_lines_transform; // For parenting the GridLine prefabs.
+
+    private Vector3 tile_size; // Size of the Unity tiles.
     private bool spawn_placed; // Indicates if the EditableGrid contains a player spawn tile.
 
     // The key is the index of the enemy in the EditableTiles array.
@@ -28,6 +32,7 @@ public class EditableGrid : MonoBehaviour
 
         tiles_transform = transform.FindChild("Tiles");
         waypoints_transform = transform.FindChild("WaypointLines");
+        grid_lines_transform = transform.FindChild("GridLines");
     }
 
     void add_enemy(EditableTile tile)
@@ -50,6 +55,31 @@ public class EditableGrid : MonoBehaviour
                 enemy_waypoints.Remove(elem.Key);
                 break;
             }
+        }
+    }
+
+    // Creates a row of grid squares that overlay the EditableTiles.
+    void create_grid_line_row(Vector3 origin, int level_width)
+    {
+        origin.x -= tile_size.x / 2;
+        origin.y -= tile_size.y / 2;
+        origin.z = -5;
+
+        GameObject obj = Instantiate(grid_line_prefab, origin, Quaternion.identity) as GameObject;
+        obj.transform.SetParent(grid_lines_transform);
+
+        LineRenderer line_renderer = obj.GetComponent<LineRenderer>();
+        line_renderer.numPositions = 5 * level_width;
+
+        for (int i = 0; i < line_renderer.numPositions; i += 5)
+        {
+            Vector3 current_origin = origin + (i * new Vector3(tile_size.x / 5, 0, 0));
+
+            line_renderer.SetPosition(i, current_origin);
+            line_renderer.SetPosition(i + 1, current_origin + new Vector3(tile_size.x, 0, 0));
+            line_renderer.SetPosition(i + 2, current_origin + tile_size);
+            line_renderer.SetPosition(i + 3, current_origin + new Vector3(0, tile_size.y, 0));
+            line_renderer.SetPosition(i + 4, current_origin);
         }
     }
 
@@ -77,6 +107,12 @@ public class EditableGrid : MonoBehaviour
             Destroy(tile.gameObject);
         }
 
+        // Clear grid lines.
+        foreach (Transform child in grid_lines_transform)
+        {
+            Destroy(child.gameObject);
+        }
+
         editable_tiles.Clear();
         enemy_waypoints.Clear();
 
@@ -94,7 +130,7 @@ public class EditableGrid : MonoBehaviour
         Texture2D texture = editable_tile_prefab.GetComponent<SpriteRenderer>().sprite.texture;
 
         // Divide size by 100 to match Unity's unit measurements.
-        Vector2 tile_size = new Vector2((float)texture.width / 100, (float)texture.height / 100);
+        tile_size = new Vector3((float)texture.width / 100, (float)texture.height / 100, 1);
 
         // Create the grid of tiles based on width & height.
         int area = level.width * level.height;
@@ -102,6 +138,9 @@ public class EditableGrid : MonoBehaviour
         {
             Vector3 pos = new Vector3(0 + tile_size.x * (i % level.width), 0 - tile_size.y * (i / level.width), 0);
             GameObject obj = Instantiate(editable_tile_prefab, pos, Quaternion.identity) as GameObject;
+
+            if (i % level.width == 0 && i < area)
+                create_grid_line_row(pos, level.width);
 
             obj.transform.SetParent(tiles_transform);
             obj.name = "Tile" + i;
@@ -231,8 +270,8 @@ public class EditableGrid : MonoBehaviour
             Vector3 line_start = elem.Value.start_pos;
             Vector3 line_end = elem.Value.get_waypoint_pos();
 
-            line_start.z = -1;
-            line_end.z = -1;
+            line_start.z = -9;
+            line_end.z = -9;
 
             string line_name = "Line" + elem.Value.tiles_index.ToString();
             LineRenderer line = waypoints_transform.FindChild(line_name).GetComponent<LineRenderer>();

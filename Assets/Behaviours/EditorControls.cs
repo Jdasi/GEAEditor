@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EditorControls : MonoBehaviour
 {
     public bool controls_enabled = true; // Used to disable controls while in the menus.
+    public Button waypoint_button;
+    public GameObject waypoint_mode_panel;
 
     private MainMenuManager main_menu_manager;
     private TileSelectionManager tile_selection_manager;
@@ -12,10 +15,9 @@ public class EditorControls : MonoBehaviour
     private EditableGrid editable_grid;
 
     private TileType tile_type_to_paint;
-    private Vector3 mouse_pos;
     private bool cursor_over_ui;
 
-    public bool setting_waypoint;
+    private bool setting_waypoint;
     private Enemy selected_enemy;
     private bool mouse_up;
 
@@ -84,14 +86,14 @@ public class EditorControls : MonoBehaviour
 
     void track_mouse()
     {
-        mouse_pos = Input.mousePosition;
-        transform.position = Camera.main.ScreenToWorldPoint(mouse_pos);
-
         cursor_over_ui = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
     }
 
     void handle_selection_controls()
     {
+        if (editable_grid.waypoint_mode_enabled())
+            return;
+
         if (Input.GetButtonDown("SelectedTileNext"))
         {
             tile_selection_manager.select_next_tile();
@@ -129,6 +131,38 @@ public class EditorControls : MonoBehaviour
             selected_enemy = editable_grid.get_enemy(tile.get_tiles_index());
             setting_waypoint = true;
         }
+
+        waypoint_mode_panel.transform.FindChild("TooltipText").GetComponent<Text>().text = setting_waypoint ?
+            "Select a destination" : "Select an Enemy";
+    }
+
+    void show_waypoint_mode_elements(bool show)
+    {
+        waypoint_mode_panel.SetActive(show);
+        waypoint_mode_panel.transform.FindChild("TooltipText").GetComponent<Text>().text = "Select an Enemy";
+
+        if (show)
+        {
+            waypoint_button.transform.FindChild("Text").GetComponent<Text>().color = Color.white;
+
+            var colors = waypoint_button.colors;
+            colors.normalColor = Color.red;
+            colors.highlightedColor = Color.grey;
+
+            waypoint_button.colors = colors;
+        } else {
+            waypoint_button.transform.FindChild("Text").GetComponent<Text>().color = Color.black;
+
+            var colors = waypoint_button.colors;
+            colors.normalColor = Color.white;
+
+            Color color;
+            ColorUtility.TryParseHtmlString("#4f99FFFF", out color);
+
+            colors.highlightedColor = color;
+
+            waypoint_button.colors = colors;
+        }
     }
 
     public void update_tile_type_to_paint(TileType type)
@@ -141,19 +175,18 @@ public class EditorControls : MonoBehaviour
         if (level_manager.get_current_level() == null)
             return;
 
-        if (editable_grid.waypoint_mode_enabled())
-        {
-            editable_grid.disable_waypoint_mode();   
-        } else {
-            editable_grid.enable_waypoint_mode();
-        }
+        set_waypoint_mode(!editable_grid.waypoint_mode_enabled());
     }
 
     public void set_waypoint_mode(bool enable)
     {
         if (enable)
+        {
             editable_grid.enable_waypoint_mode();
-        else
-            editable_grid.disable_waypoint_mode();
+        } else {
+            editable_grid.disable_waypoint_mode();            
+        }
+
+        show_waypoint_mode_elements(enable);
     }
 }
