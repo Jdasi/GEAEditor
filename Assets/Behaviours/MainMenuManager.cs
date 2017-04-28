@@ -38,7 +38,7 @@ public class MainMenuManager : MonoBehaviour
 
     void Update()
     {
-        editor_controls.controls_enabled = camera_controls.controls_enabled = !is_menu_open();
+        camera_controls.controls_enabled = !is_menu_open();
         waypoint_button.interactable = !is_menu_open();
     }
 

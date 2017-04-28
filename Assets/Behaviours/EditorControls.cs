@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class EditorControls : MonoBehaviour
 {
-    public bool controls_enabled = true; // Used to disable controls while in the menus.
     public Button waypoint_button;
     public GameObject waypoint_mode_panel;
 
@@ -42,10 +41,6 @@ public class EditorControls : MonoBehaviour
             setting_waypoint = false;
             selected_enemy = null;
         }
-        
-        // Don't go any further if controls are disabled.
-        if (!controls_enabled)
-            return;
 
         handle_selection_controls();
         handle_mouse_controls();
