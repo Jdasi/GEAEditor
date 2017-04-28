@@ -8,6 +8,7 @@ public class MainMenuManager : MonoBehaviour
     public GameObject main_menu;
     public GameObject new_level_menu;
     public GameObject load_level_menu;
+    public Text save_text;
 
     public Button save_button;
     public Button create_button;
@@ -28,6 +29,7 @@ public class MainMenuManager : MonoBehaviour
         level_manager = GameObject.FindObjectOfType<LevelManager>();
         editor_controls = GameObject.FindObjectOfType<EditorControls>();
         camera_controls = GameObject.FindObjectOfType<CameraControls>();
+        save_text.text = "saved to: " + Application.dataPath + "/levels.json";
 
         show_menu(main_menu, true);
 
@@ -63,6 +65,11 @@ public class MainMenuManager : MonoBehaviour
         menu.SetActive(show);
     }
 
+    void hide_save_text()
+    {
+        save_text.gameObject.SetActive(false);
+    }
+
     public void toggle_main_menu()
     {
         show_menu(main_menu, !main_menu.activeSelf);
@@ -80,6 +87,11 @@ public class MainMenuManager : MonoBehaviour
 
     public void button_save_level()
     {
+        CancelInvoke();
+
+        save_text.gameObject.SetActive(true);
+        Invoke("hide_save_text", 3.0f);
+
         level_manager.save_levels();
     }
 

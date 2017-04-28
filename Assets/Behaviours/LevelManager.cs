@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using LitJson;
 
 public class LevelManager : MonoBehaviour
 {
+    public Text level_text;
+
     private EditableGrid editable_grid;
     private FileIO file_io = new FileIO();
 
@@ -33,6 +36,7 @@ public class LevelManager : MonoBehaviour
     public void load_level(string level_name)
     {
         current_level = levels[level_name];
+        level_text.text = level_name;
 
         editable_grid.init_grid(current_level);
     }
@@ -42,6 +46,8 @@ public class LevelManager : MonoBehaviour
         if (levels[level_name] == current_level)
         {
             current_level = null;
+            level_text.text = "No level loaded";
+
             editable_grid.reset_grid();
         }
 

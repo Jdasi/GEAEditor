@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TileSelectionManager : MonoBehaviour
 {
     public GameObject gui_tile_prefab;
     public Texture2D tileset;
+    public Text page_text;
 
     private EditorControls editor_controls;
     private List<GUITile> gui_tiles = new List<GUITile>();
@@ -17,6 +19,7 @@ public class TileSelectionManager : MonoBehaviour
 
     private const int MAX_DISPLAYED_TILES = 10;
     private int current_page = 1;
+    private int max_pages;
     private int min_offset;
     private int max_offset;
 
@@ -38,6 +41,8 @@ public class TileSelectionManager : MonoBehaviour
 
         int width_times =  Mathf.FloorToInt(tileset.width / tile_size);
         int height_times = Mathf.FloorToInt(tileset.height / tile_size);
+
+        max_pages = height_times;
 
         for (int y = height_times - 1; y >= 0; --y)
         {
@@ -75,6 +80,8 @@ public class TileSelectionManager : MonoBehaviour
     {
         min_offset = (MAX_DISPLAYED_TILES * current_page) - MAX_DISPLAYED_TILES;
         max_offset = (MAX_DISPLAYED_TILES * current_page) - 1;
+
+        page_text.text = "(" + current_page.ToString() + "/" + max_pages.ToString() + ")";
 
         selection_changed_event(0, min_offset);
 
