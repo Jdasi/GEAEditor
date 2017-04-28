@@ -150,6 +150,7 @@ public class TileSelectionManager : MonoBehaviour
         update_min_max();
     }
 
+    // Called whenever a GUITile is clicked or user inputs a tile selection key.
     public void selection_changed_event(int index, int type_id)
     {
         foreach (var gui_tile in gui_tiles)

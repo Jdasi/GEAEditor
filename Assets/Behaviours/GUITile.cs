@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Used by TileSelectionManager for displaying the available tiles from the tileset.
 public class GUITile : MonoBehaviour
 {
     private int index = 0; // index of the tile in the GUITileManager list.

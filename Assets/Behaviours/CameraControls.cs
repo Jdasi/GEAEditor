@@ -34,6 +34,7 @@ public class CameraControls : MonoBehaviour
         handle_zoom();
 	}
 
+    // Camera move and scroll speed is based on shift key press.
     void handle_speed_modifier()
     {
         current_modifier = Input.GetButton("CameraSpeedModifier") ? shift_modifier : 1.0f;
@@ -49,6 +50,7 @@ public class CameraControls : MonoBehaviour
         Camera.main.transform.position = temp;
     }
 
+    // Allows dragging of the camera with RMB.
     void handle_mouse_movement()
     {
         working_drag_speed = drag_speed * Camera.main.orthographicSize;

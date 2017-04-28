@@ -190,6 +190,7 @@ public class EditableGrid : MonoBehaviour
         tile.paint(tile_type_to_paint);
     }
 
+    // Used by LevelManager & FileIO to save the level data.
     public int[] get_tile_ids()
     {
         int[] tile_ids = new int[editable_tiles.Count];
@@ -202,6 +203,7 @@ public class EditableGrid : MonoBehaviour
         return tile_ids;
     }
 
+    // Used by LevelManager & FileIO to save the level data.
     public int[] get_enemy_waypoints()
     {
         int[] waypoints = new int[enemy_waypoints.Count];
@@ -222,6 +224,7 @@ public class EditableGrid : MonoBehaviour
         return waypoint_mode;
     }
 
+    // Shows waypoint lines for each enemy.
     public void enable_waypoint_mode()
     {
         waypoint_mode = true;
@@ -260,6 +263,7 @@ public class EditableGrid : MonoBehaviour
         }
     }
 
+    // Updates the waypoint lines in case any waypoints have been changed since the lines were created.
     public void refresh_waypoints()
     {
         if (!waypoint_mode)

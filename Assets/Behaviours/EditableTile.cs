@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+// Used in the EditableGrid to form the canvas.
 public class EditableTile : MonoBehaviour
 {
     private int tiles_index; // index of the tile in an EditableTile array.

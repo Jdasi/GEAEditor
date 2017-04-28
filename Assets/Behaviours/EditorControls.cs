@@ -46,6 +46,7 @@ public class EditorControls : MonoBehaviour
         handle_mouse_controls();
 	}
 
+    // Main method for handling painting / waypoint setting via mouse raycasting.
     void handle_mouse_controls()
     {
         if (cursor_over_ui)
@@ -79,11 +80,13 @@ public class EditorControls : MonoBehaviour
         }
     }
 
+    // Detects if the mouse is over UI elements.
     void track_mouse()
     {
         cursor_over_ui = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
     }
 
+    // Keyboard controls for selecting tiles.
     void handle_selection_controls()
     {
         if (editable_grid.waypoint_mode_enabled())
@@ -110,6 +113,7 @@ public class EditorControls : MonoBehaviour
         }
     }
 
+    // Performs an action based on the current stage of waypoint setting.
     void handle_waypoint_setting(EditableTile tile)
     {
         if (setting_waypoint)
@@ -131,6 +135,7 @@ public class EditorControls : MonoBehaviour
             "Select a destination" : "Select an Enemy";
     }
 
+    // Purely aesthetic function to make it more apparent waypoint mode is active or inactive.
     void show_waypoint_mode_elements(bool show)
     {
         waypoint_mode_panel.SetActive(show);
