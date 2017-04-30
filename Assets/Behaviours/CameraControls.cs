@@ -14,6 +14,7 @@ public class CameraControls : MonoBehaviour
     private float current_modifier = 1.0f;
     private float original_zoom;
 
+    private Vector3 last_reset_pos;
     private Vector3 old_cam_pos;
     private Vector3 drag_origin;
 
@@ -77,22 +78,21 @@ public class CameraControls : MonoBehaviour
 
         if (Input.GetButtonDown("ResetCameraZoom"))
         {
-            reset_zoom();
+            reset_camera();
         }
     }
 
-    void reset_zoom()
+    public void reset_camera()
     {
+        Camera.main.transform.position = last_reset_pos;
         Camera.main.orthographicSize = original_zoom;
     }
 
     public void reset_camera(Vector2 pos)
     {
-        Vector3 new_pos = pos;
-        new_pos.z = Camera.main.transform.position.z;
+        last_reset_pos = pos;
+        last_reset_pos.z = Camera.main.transform.position.z;
 
-        Camera.main.transform.position = new_pos;
-
-        reset_zoom();
+        reset_camera();
     }
 }
