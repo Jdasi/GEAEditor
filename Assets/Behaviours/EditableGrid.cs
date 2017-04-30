@@ -25,10 +25,13 @@ public class EditableGrid : MonoBehaviour
     private Transform waypoints_transform; // For parenting the WaypointLine prefabs;
     private bool waypoint_mode; // Determines interaction with the EditableGrid.
 
+    private SpriteRenderer white_background; // Sprite to display underneath the EditableTiles.
+
     void Start()
     {
         camera_controls = GameObject.FindObjectOfType<CameraControls>();
         tile_selection_manager = GameObject.FindObjectOfType<TileSelectionManager>();
+        white_background = transform.FindChild("Background").GetComponent<SpriteRenderer>();
 
         tiles_transform = transform.FindChild("Tiles");
         waypoints_transform = transform.FindChild("WaypointLines");
@@ -117,6 +120,7 @@ public class EditableGrid : MonoBehaviour
         enemy_waypoints.Clear();
 
         spawn_placed = false;
+        white_background.enabled = false;
 
         disable_waypoint_mode();
     }
@@ -156,7 +160,14 @@ public class EditableGrid : MonoBehaviour
         init_enemy_waypoints(level.enemy_waypoints);
 
         // Center camera on the grid.
-        camera_controls.reset_camera(new Vector2((level.width * tile_size.x) / 2, -((level.height * tile_size.y) / 2)));
+        float pos_x = level.width * (tile_size.x / 2) - (tile_size.x / 2);
+        float pos_y = -(level.height * (tile_size.y / 2) - (tile_size.y / 2));
+        camera_controls.reset_camera(new Vector2(pos_x, pos_y));
+
+        // Display white background.
+        white_background.enabled = true;
+        white_background.transform.localScale = new Vector3(level.width, level.height, 1);
+        white_background.transform.position = new Vector3(pos_x, pos_y, 0);
     }
 
     // Called by init_grid() and whenever the user tries to paint a Tile via EditorControls.

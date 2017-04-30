@@ -22,14 +22,12 @@ public class MainMenuManager : MonoBehaviour
 
     private LevelManager level_manager;
     private EditorControls editor_controls;
-    private CameraControls camera_controls;
 
 	void Start()
     {
         level_manager = GameObject.FindObjectOfType<LevelManager>();
         editor_controls = GameObject.FindObjectOfType<EditorControls>();
-        camera_controls = GameObject.FindObjectOfType<CameraControls>();
-        save_text.text = "saved to: " + Application.dataPath + "/levels.json";
+        save_text.text = "saved to: " + Application.streamingAssetsPath + "/levels.json";
 
         show_menu(main_menu, true);
 
@@ -38,13 +36,7 @@ public class MainMenuManager : MonoBehaviour
 
     void Update()
     {
-        camera_controls.controls_enabled = !is_menu_open();
         waypoint_button.interactable = !is_menu_open();
-    }
-
-    bool is_menu_open()
-    {
-        return main_menu.activeSelf || new_level_menu.activeSelf || load_level_menu.activeSelf;
     }
 
     void hide_all_menus()
@@ -68,6 +60,11 @@ public class MainMenuManager : MonoBehaviour
     void hide_save_text()
     {
         save_text.gameObject.SetActive(false);
+    }
+
+    public bool is_menu_open()
+    {
+        return main_menu.activeSelf || new_level_menu.activeSelf || load_level_menu.activeSelf;
     }
 
     public void toggle_main_menu()

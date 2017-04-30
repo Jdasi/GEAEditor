@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class CameraControls : MonoBehaviour
 {
-    public bool controls_enabled = true; // Used to disable controls while in the menus.
-
     public float move_speed = 20.0f;
     public float scroll_speed = 300.0f;
     public float shift_modifier = 3.0f;
     public float drag_speed = 4.0f;
 
+    private MainMenuManager main_menu_manager;
     private float working_drag_speed;
 
     private float current_modifier = 1.0f;
@@ -20,12 +19,13 @@ public class CameraControls : MonoBehaviour
 
 	void Start()
     {
+        main_menu_manager = GameObject.FindObjectOfType<MainMenuManager>();
         original_zoom = Camera.main.orthographicSize;
 	}
 	
 	void Update()
     {
-        if (!controls_enabled)
+        if (main_menu_manager.is_menu_open())
             return;
 
         handle_speed_modifier();

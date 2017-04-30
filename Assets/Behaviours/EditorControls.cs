@@ -89,7 +89,8 @@ public class EditorControls : MonoBehaviour
     // Keyboard controls for selecting tiles.
     void handle_selection_controls()
     {
-        if (editable_grid.waypoint_mode_enabled())
+        if (editable_grid.waypoint_mode_enabled() ||
+            main_menu_manager.is_menu_open())
             return;
 
         if (Input.GetButtonDown("SelectedTileNext"))

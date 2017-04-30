@@ -20,7 +20,7 @@ public class FileIO
 
     public SortedDictionary<string, JSWLevel> load_levels()
     {
-        string file_name = Application.dataPath + "/levels.json";
+        string file_name = Application.streamingAssetsPath + "/levels.json";
 
         if (!File.Exists(file_name))
             return new SortedDictionary<string, JSWLevel>();
@@ -62,6 +62,6 @@ public class FileIO
     public void save_levels(SortedDictionary<string, JSWLevel> levels)
     {
         JsonData levels_data = JsonMapper.ToJson(levels);
-        File.WriteAllText(Application.dataPath + "/levels.json", levels_data.ToString());
+        File.WriteAllText(Application.streamingAssetsPath + "/levels.json", levels_data.ToString());
     }
 }
