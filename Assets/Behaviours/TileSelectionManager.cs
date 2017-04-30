@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class TileSelectionManager : MonoBehaviour
 {
     public GameObject gui_tile_prefab;
-    public Texture2D tileset;
     public Text page_text;
 
     private EditorControls editor_controls;
@@ -14,6 +13,7 @@ public class TileSelectionManager : MonoBehaviour
     private int selected_gui_tile_index;
     private TileType selected_tile_type;
 
+    private Texture2D tileset;
     private List<TileType> tile_types = new List<TileType>();
     private int tile_size = 60;
 
@@ -36,6 +36,8 @@ public class TileSelectionManager : MonoBehaviour
 
     void load_tileset()
     {
+        tileset = JHelper.load_png(Application.streamingAssetsPath + "/Tileset_1.png");
+
         int size_x = Mathf.FloorToInt(tile_size);
         int size_y = Mathf.FloorToInt(tile_size);
 
