@@ -8,6 +8,7 @@ public class MainMenuManager : MonoBehaviour
     public GameObject main_menu;
     public GameObject new_level_menu;
     public GameObject load_level_menu;
+    public Text error_prompt_text;
     public Text save_text;
 
     public Button save_button;
@@ -162,12 +163,20 @@ public class MainMenuManager : MonoBehaviour
     {
         if (field_width.text.Length > 0 && field_height.text.Length > 0)
         {
-            if (int.Parse(field_width.text) >= 1 && int.Parse(field_height.text) >= 1)
+            int width = int.Parse(field_width.text);
+            int height = int.Parse(field_height.text);
+
+            if ((width >= 2 && width <= 100) && (height >= 2 && height <= 100))
             {
                 create_button.interactable = true;
+                error_prompt_text.enabled = false;
+            } else {
+                create_button.interactable = false;
+                error_prompt_text.enabled = true;
             }
         } else {
             create_button.interactable = false;
+            error_prompt_text.enabled = true;
         }
     }
 
